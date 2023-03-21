@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Body */
+body {
+  width: 100%;
+}
+/* Header */
+
+.navbar-brand img {
+  width: 150px;
+  height: 60px;
+}
+
+.buscador {
+  width: 500px;
+}
