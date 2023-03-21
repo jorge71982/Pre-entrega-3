@@ -147,22 +147,3 @@ botonPagar.addEventListener("click", () => {
     precioTotalIva.innerHTML = "Total a pagar: $" + resultadoTotalIva.toFixed(2)
 });
 
-// Actualizar inventario con boton 
-let botonesAnadir = document.getElementsByClassName("btn-outline-info");
-//recorrer todos los botones y agregarles un evento que al hacer clic añadan un producto al carrito y actualicen el inventario 
-for (let i = 0; i < botonesAnadir.length; i++) {
-   botonesAnadir[i].addEventListener("click", () => {
-     //obtener el id del botón que se ha pulsado y guardarlo en una variable 
-     let idBoton = this.id;
-     //recorrer la lista de productos y buscar el que tenga el mismo id 
-     for (let j = 0; j < producto.listaProductos.length; j++) {
-       if(idBoton === ("equipo"+producto.listaProductos[j].id)){
-         //añadir ese producto al carrito 
-         carrito.anadir(producto.listaProductos[j]);
-         //actualizar el inventario 
-         actualizarInventario(producto.listaProductos[j]);
-         break;
-       }
-    }
-})
-}
