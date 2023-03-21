@@ -147,3 +147,9 @@ botonPagar.addEventListener("click", () => {
     precioTotalIva.innerHTML = "Total a pagar: $" + resultadoTotalIva.toFixed(2)
 });
 
+// Vaciar carrito al finalizar la compra
+const botonFinalizar = document.getElementById("finalizar")
+botonFinalizar.addEventListener("click", () => {
+    localStorage.removeItem("listaCarrito");
+    contenedor_carrito.innerHTML = ""
+});
