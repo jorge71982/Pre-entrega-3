@@ -77,6 +77,11 @@ class ControladorCarrito{
         return this.precioTotal * 0.21;
     }
 
+    limpiar() {
+        this.listaCarrito = []
+        localStorage.removeItem("listaCarrito")
+    }
+
     mostrarEnDOM(contenedor_carrito){
         //limpio el contenedor
         contenedor_carrito.innerHTML = ""
@@ -150,6 +155,6 @@ botonPagar.addEventListener("click", () => {
 // Vaciar carrito al finalizar la compra
 const botonFinalizar = document.getElementById("finalizar")
 botonFinalizar.addEventListener("click", () => {
-    localStorage.removeItem("listaCarrito");
-    contenedor_carrito.innerHTML = ""
+    manejarCarrito.limpiar()
+    manejarCarrito.mostrarEnDOM(contenedor_carrito)
 });
