@@ -37,6 +37,19 @@ class ControladorProducto {
         manejarCarrito.anadir(producto);
         manejarCarrito.obtenerListaCarrito();
         manejarCarrito.mostrarEnDOM(contenedor_carrito);
+
+        Toastify({
+          text: "Producto agragado al carrito",
+          duration: 3000,
+          destination: "https://github.com/apvarun/toastify-js",
+          close: true,
+          gravity: "bottom", // `top` or `bottom`
+          position: "right", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+          },
+        }).showToast();
       });
     });
   }
@@ -149,6 +162,7 @@ botonPagar.addEventListener("click", () => {
   precioTotal.innerHTML = "Total: $" + resultado.toFixed(2);
   precioIva.innerHTML = "Iva: $" + resultadoIva.toFixed(2);
   precioTotalIva.innerHTML = "Total a pagar: $" + resultadoTotalIva.toFixed(2);
+
 });
 
 // Vaciar carrito al finalizar la compra
@@ -156,4 +170,12 @@ const botonFinalizar = document.getElementById("finalizar");
 botonFinalizar.addEventListener("click", () => {
   manejarCarrito.limpiar();
   manejarCarrito.mostrarEnDOM(contenedor_carrito);
+
+  Swal.fire({
+    position: 'top-center',
+    icon: 'success',
+    title: 'Compra realizada con exito',
+    showConfirmButton: false,
+    timer: 1500
+  })
 });
