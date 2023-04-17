@@ -5,7 +5,7 @@ class ControladorProducto {
     this.contenedor_productos = document.getElementById("contenedor_productos");
   }
 
-  async obtenerListaProductoJSON () {
+  async obtenerListaProductoJSON() {
     let res = await fetch("./js/API_local.json");
     this.listaProductos = await res.json();
     this.mostrarEnDOM();
@@ -30,9 +30,11 @@ class ControladorProducto {
       `;
     });
 
-    //Añadimos Eventos a los botones de cada CARD
+    //Añadir producto a carrito
     this.listaProductos.forEach((producto) => {
-      const botonAnadirProducto = document.getElementById(`equipo${producto.id}`);
+      const botonAnadirProducto = document.getElementById(
+        `equipo${producto.id}`
+      );
       botonAnadirProducto.addEventListener("click", () => {
         manejarCarrito.anadir(producto);
         manejarCarrito.obtenerListaCarrito();
@@ -41,7 +43,6 @@ class ControladorProducto {
         Toastify({
           text: "Producto agragado al carrito",
           duration: 3000,
-          destination: "https://github.com/apvarun/toastify-js",
           close: true,
           gravity: "bottom", // `top` or `bottom`
           position: "right", // `left`, `center` or `right`
@@ -55,14 +56,11 @@ class ControladorProducto {
   }
 }
 
-
-
-
-
 // Clase para carrito
 class ControladorCarrito {
   constructor() {
     this.listaCarrito = [];
+    
   }
 
   obtenerListaCarrito() {
@@ -74,15 +72,15 @@ class ControladorCarrito {
   }
 
   eliminar(producto) {
-    let indice = this.listaCarrito.indexof(producto);
+    let indice = this.listaCarrito.indexOf(producto);
     this.listaCarrito.splice(indice, 1);
+    
   }
 
   anadir(producto) {
     this.listaCarrito.push(producto);
     let arrFormatoJSON = JSON.stringify(this.listaCarrito);
     localStorage.setItem("listaCarrito", arrFormatoJSON);
-    producto.inventario -= 1;
   }
 
   calcularPrecioTotal() {
@@ -110,6 +108,7 @@ class ControladorCarrito {
     contenedor_carrito.innerHTML = "";
     //muestro todo
     this.listaCarrito.forEach((producto) => {
+      let precioConIva = producto.precio * 0.21
       contenedor_carrito.innerHTML += `
             <div class="card mb-3" style="max-width: 540px;">
             <div class="row g-0">
@@ -120,12 +119,37 @@ class ControladorCarrito {
                     <div class="card-body">
                         <h5 class="card-title">${producto.marca}</h5>
                         <p class="card-text">${producto.descripcion}</p>
-                        <p class="card-text"><small class="text-muted">$${producto.precio}</small></p>
+                        <button id= "eliminar${producto.id}"><i class="fal fa-trash-restore"></i></button>
+                        <p class="card-text"><small class="text-muted">$${producto.precio} + IVA </small><small class="text-muted" id= "iva_producto">$${precioConIva.toFixed(2)}</small></p>
                     </div>
                 </div>
             </div>
         </div>
             `;
+        });
+
+
+
+   //Eliminar producto de carrito
+    this.listaCarrito.forEach((producto) => {
+      const botonEliminar = document.getElementById(`eliminar${producto.id}`);
+      botonEliminar.addEventListener("click", () => {
+        this.eliminar(producto);
+        localStorage.getItem("listaCarrito", JSON.stringify(this.listaCarrito));
+        this.mostrarEnDOM(contenedor_carrito);
+        
+        Toastify({
+          text: "Producto eliminado",
+          duration: 3000,
+          close: true,
+          gravity: "top", // `top` or `bottom`
+          position: "center", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+          },
+        }).showToast();
+      });
     });
   }
 }
@@ -143,6 +167,7 @@ manejarProductos.mostrarEnDOM(document.getElementById("contenedor_productos"));
 const contenedor_productos = document.getElementById("contenedor_productos");
 const contenedor_carrito = document.getElementById("contenedor_carrito");
 
+
 //APP JS
 manejarProductos.mostrarEnDOM(contenedor_productos);
 manejarCarrito.mostrarEnDOM(contenedor_carrito);
@@ -150,7 +175,7 @@ manejarProductos.obtenerListaProductoJSON();
 manejarCarrito.obtenerListaCarrito();
 
 
-//Añadimos Eventos al boton de carrito
+//Añadimos Eventos al boton pagar de carrito
 let botonPagar = document.getElementById("pagar");
 let precioTotal = document.getElementById("total");
 let precioIva = document.getElementById("iva");
@@ -162,7 +187,6 @@ botonPagar.addEventListener("click", () => {
   precioTotal.innerHTML = "Total: $" + resultado.toFixed(2);
   precioIva.innerHTML = "Iva: $" + resultadoIva.toFixed(2);
   precioTotalIva.innerHTML = "Total a pagar: $" + resultadoTotalIva.toFixed(2);
-
 });
 
 // Vaciar carrito al finalizar la compra
@@ -172,10 +196,10 @@ botonFinalizar.addEventListener("click", () => {
   manejarCarrito.mostrarEnDOM(contenedor_carrito);
 
   Swal.fire({
-    position: 'top-center',
-    icon: 'success',
-    title: 'Compra realizada con exito',
+    position: "top-center",
+    icon: "success",
+    title: "Compra realizada con exito",
     showConfirmButton: false,
-    timer: 1500
-  })
+    timer: 1500,
+  });
 });
