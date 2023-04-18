@@ -12,10 +12,28 @@ body {
 /* Header */
 
 .navbar-brand img {
-  width: 150px;
-  height: 60px;
+  width: 100px;
+  height: 40px;
 }
 
 .buscador {
   width: 500px;
+}
+
+.card {
+  border-radius: 20px;
+  box-shadow: 0 35px 88px rgba(0,0,0,0.15);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+
+.papelera {
+  border: none;
+  width: 30px;
+  height: 40px;
+  background-color: white;
+  position: absolute;
+  left: 90%;
+  top: 80%;
 }

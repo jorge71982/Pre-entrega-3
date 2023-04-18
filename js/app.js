@@ -60,7 +60,6 @@ class ControladorProducto {
 class ControladorCarrito {
   constructor() {
     this.listaCarrito = [];
-    
   }
 
   obtenerListaCarrito() {
@@ -74,11 +73,18 @@ class ControladorCarrito {
   eliminar(producto) {
     let indice = this.listaCarrito.indexOf(producto);
     this.listaCarrito.splice(indice, 1);
-    
   }
 
   anadir(producto) {
-    this.listaCarrito.push(producto);
+    let existeProducto = this.listaCarrito.some(
+      (elemento) => elemento.id == producto.id
+    );
+    if (existeProducto) {
+      const productoEncontrado = this.buscar(producto.id);
+      productoEncontrado.cantidad += 1;
+    } else {
+      this.listaCarrito.push(producto);
+    }
     let arrFormatoJSON = JSON.stringify(this.listaCarrito);
     localStorage.setItem("listaCarrito", arrFormatoJSON);
   }
@@ -103,41 +109,49 @@ class ControladorCarrito {
     localStorage.removeItem("listaCarrito");
   }
 
+  buscar(id) {
+    return this.listaCarrito.find((producto) => producto.id == id);
+  }
+
   mostrarEnDOM(contenedor_carrito) {
     //limpio el contenedor
     contenedor_carrito.innerHTML = "";
     //muestro todo
     this.listaCarrito.forEach((producto) => {
-      let precioConIva = producto.precio * 0.21
+      let precioConIva = producto.precio * 0.21;
       contenedor_carrito.innerHTML += `
             <div class="card mb-3" style="max-width: 540px;">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img src="${producto.img}" class="img-fluid rounded-start" alt="${producto.alt}">
+                    <img src="${
+                      producto.img
+                    }" class="img-fluid rounded-start" alt="${producto.alt}">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
                         <h5 class="card-title">${producto.marca}</h5>
-                        <p class="card-text">${producto.descripcion}</p>
-                        <button id= "eliminar${producto.id}"><i class="fal fa-trash-restore"></i></button>
-                        <p class="card-text"><small class="text-muted">$${producto.precio} + IVA </small><small class="text-muted" id= "iva_producto">$${precioConIva.toFixed(2)}</small></p>
+                        <p class="card-text">${producto.descripcion}</p><button class="papelera" id= "eliminar${producto.id}"><i class="fa-solid fa-trash-can"></i></i></button>
+                        <p class="card-text"><small class="text-muted">$${producto.precio } + IVA </small><small class="text-muted" id= "iva_producto">$${precioConIva.toFixed(
+        2
+      )}</small></p>
+                        <p class="card-text"><small class="text-muted">Cantidad: ${
+                          producto.cantidad
+                        }</small></p>
                     </div>
                 </div>
             </div>
         </div>
             `;
-        });
+    });
 
-
-
-   //Eliminar producto de carrito
+    //Eliminar producto de carrito
     this.listaCarrito.forEach((producto) => {
       const botonEliminar = document.getElementById(`eliminar${producto.id}`);
       botonEliminar.addEventListener("click", () => {
         this.eliminar(producto);
         localStorage.getItem("listaCarrito", JSON.stringify(this.listaCarrito));
         this.mostrarEnDOM(contenedor_carrito);
-        
+
         Toastify({
           text: "Producto eliminado",
           duration: 3000,
@@ -167,13 +181,11 @@ manejarProductos.mostrarEnDOM(document.getElementById("contenedor_productos"));
 const contenedor_productos = document.getElementById("contenedor_productos");
 const contenedor_carrito = document.getElementById("contenedor_carrito");
 
-
 //APP JS
 manejarProductos.mostrarEnDOM(contenedor_productos);
 manejarCarrito.mostrarEnDOM(contenedor_carrito);
 manejarProductos.obtenerListaProductoJSON();
 manejarCarrito.obtenerListaCarrito();
-
 
 //Añadimos Eventos al boton pagar de carrito
 let botonPagar = document.getElementById("pagar");
@@ -185,8 +197,8 @@ botonPagar.addEventListener("click", () => {
   let resultadoIva = manejarCarrito.soloIVA();
   let resultadoTotalIva = manejarCarrito.conIVA();
   precioTotal.innerHTML = "Total: $" + resultado.toFixed(2);
-  precioIva.innerHTML = "Iva: $" + resultadoIva.toFixed(2);
-  precioTotalIva.innerHTML = "Total a pagar: $" + resultadoTotalIva.toFixed(2);
+  precioIva.innerHTML = "IVA: $" + resultadoIva.toFixed(2);
+  precioTotalIva.innerHTML = "Total a pagar con IVA: $" + resultadoTotalIva.toFixed(2);
 });
 
 // Vaciar carrito al finalizar la compra
